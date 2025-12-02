@@ -2,19 +2,26 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from app.core.config import settings
 
+# DATABASE URL from your environment
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# ⭐ IMPORTANT FOR RENDER (prevents DB disconnect errors)
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    pool_pre_ping=True
+)
 
+# Session maker
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine
 )
 
-# ⭐ REQUIRED — this is what your model inherits from
+# Base class for models
 Base = declarative_base()
 
+# DB dependency
 def get_db():
     db = SessionLocal()
     try:
